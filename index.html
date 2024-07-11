@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .food-inputs {
+            margin-bottom: 10px;
+        }
+
+        #results {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 400px;
+        }
+
+        .food-subtotal {
+            margin-bottom: 5px;
+        }
+
+        #total {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calorie Calculator</h1>
+    <div class="food-inputs">
+        <table>
+            <tr>
+                <th>Food</th>
+                <th>Calories per oz</th>
+                <th>Ounces</th>
+                <th>Running Total</th>
+            </tr>
+            <tr>
+                <td>Apple</td>
+                <td>15</td>
+                <td><input type="number" id="apple" data-calories-per-ounce="15"></td>
+                <td id="apple-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Almonds</td>
+                <td>85</td>
+                <td><input type="number" id="almonds" data-calories-per-ounce="85"></td>
+                <td id="almonds-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Banana</td>
+                <td>25</td>
+                <td><input type="number" id="banana" data-calories-per-ounce="25"></td>
+                <td id="banana-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Beef</td>
+                <td>71</td>
+                <td><input type="number" id="beef" data-calories-per-ounce="71"></td>
+                <td id="beef-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Black Beans</td>
+                <td>114</td>
+                <td><input type="number" id="black-beans" data-calories-per-ounce="114"></td>
+                <td id="black-beans-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Broccoli</td>
+                <td>11</td>
+                <td><input type="number" id="broccoli" data-calories-per-ounce="11"></td>
+                <td id="broccoli-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Brussels Sprouts</td>
+                <td>12</td>
+                <td><input type="number" id="brussels-sprouts" data-calories-per-ounce="12"></td>
+                <td id="brussels-sprouts-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Carrots</td>
+                <td>12</td>
+                <td><input type="number" id="carrots" data-calories-per-ounce="12"></td>
+                <td id="carrots-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Chicken</td>
+                <td>46</td>
+                <td><input type="number" id="chicken" data-calories-per-ounce="46"></td>
+                <td id="chicken-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Eggs</td>
+                <td>78</td>
+                <td><input type="number" id="eggs" data-calories-per-ounce="78"></td>
+                <td id="eggs-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Frozen Cherries</td>
+                <td>52</td>
+                <td><input type="number" id="frozen-cherries" data-calories-per-ounce="52"></td>
+                <td id="frozen-cherries-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Frozen Peach</td>
+                <td>51</td>
+                <td><input type="number" id="frozen-peach" data-calories-per-ounce="51"></td>
+                <td id="frozen-peach-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Greek Yogurt</td>
+                <td>59</td>
+                <td><input type="number" id="greek-yogurt" data-calories-per-ounce="59"></td>
+                <td id="greek-yogurt-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Green Beans</td>
+                <td>9</td>
+                <td><input type="number" id="green-beans" data-calories-per-ounce="9"></td>
+                <td id="green-beans-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Mixed Cooked Vegetables</td>
+                <td>25</td>
+                <td><input type="number" id="mixed-cooked-vegetables" data-calories-per-ounce="25"></td>
+                <td id="mixed-cooked-vegetables-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Mixed Nuts</td>
+                <td>170</td>
+                <td><input type="number" id="mixed-nuts" data-calories-per-ounce="170"></td>
+                <td id="mixed-nuts-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Pork</td>
+                <td>69</td>
+                <td><input type="number" id="pork" data-calories-per-ounce="69"></td>
+                <td id="pork-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Prepared Oatmeal</td>
+                <td>140</td>
+                <td><input type="number" id="prepared-oatmeal" data-calories-per-ounce="140"></td>
+                <td id="prepared-oatmeal-running-total">0</td>
+            </tr>
+            <tr>
+                <td>Blue Cheese</td>
+                <td>100</td>
+                <td><input type="number" id="blue-cheese" data-calories-per-ounce="100"></td>
+                <td id="blue-cheese-running-total">0</td>
+            </tr>
+        </table>
+    </div>
+    <button onclick="calculate()">Calculate</button>
+    <div id="results">
+        <!-- Subtotals and totals will be displayed here -->
+    </div>
+
+    <div id="total" style="display: none;">
+        <table>
+            <tr>
+                <th>Total Calories</th>
+                <td id="total-calories"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function calculate() {
+            const foods = document.querySelectorAll('.food-inputs input');
+            let totalCalories = 0;
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            const totalDiv = document.getElementById('total');
+            totalDiv.style.display = 'none';
+
+            // Zero out the total calories
+            document.getElementById('total-calories').textContent = 0;
+
+            // Zero out the running totals
+            const runningTotalCells = document.querySelectorAll('[id$="-running-total"]');
+            runningTotalCells.forEach(cell => {
+                cell.textContent = 0;
+            });
+
+            foods.forEach(food => {
+                const ounces = parseFloat(food.value);
+                if (!isNaN(ounces)) {
+                    const caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
+                    const subtotalCalories = ounces * caloriesPerOunce;
+                    totalCalories += subtotalCalories;
+
+                    const foodName = food.id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const foodSubtotalRow = document.createElement('tr');
+                    const foodNameCell = document.createElement('td');
+                    const caloriesPerOunceCell = document.createElement('td');
+                    const ouncesCell = document.createElement('td');
+                    const runningTotalCell = document.createElement('td');
+                    foodNameCell.textContent = foodName;
+                    caloriesPerOunceCell.textContent = caloriesPerOunce;
+                    ouncesCell.textContent = ounces;
+                    const previousRunningTotal = parseFloat(document.getElementById(`${food.id}-running-total`).textContent); // Retrieve previous running total
+                    const newRunningTotal = previousRunningTotal + subtotalCalories; // Calculate new running total
+                    runningTotalCell.textContent = newRunningTotal;
+                    document.getElementById(`${food.id}-running-total`).textContent = newRunningTotal; // Update running total in the table
+                    foodSubtotalRow.appendChild(foodNameCell);
+                    foodSubtotalRow.appendChild(caloriesPerOunceCell);
+                    foodSubtotalRow.appendChild(ouncesCell);
+                    foodSubtotalRow.appendChild(runningTotalCell);
+                    resultsDiv.appendChild(foodSubtotalRow);
+                }
+            });
+
+            if (totalCalories > 0) {
+                const totalCaloriesCell = document.getElementById('total-calories');
+                const runningTotalCells = document.querySelectorAll('[id$="-running-total"]'); // Select all running total cells
+                let sum = 0;
+                runningTotalCells.forEach(cell => {
+                    sum += parseFloat(cell.textContent);
+                });
+                totalCaloriesCell.textContent = sum;
+
+                totalDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
