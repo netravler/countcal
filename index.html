@@ -26,6 +26,7 @@
 
         .food-inputs {
             margin-bottom: 10px;
+            overflow-x: auto;
         }
 
         #results {
@@ -43,6 +44,45 @@
             margin-top: 20px;
             border: 1px solid #ccc;
             padding: 10px;
+        }
+
+        /* Media queries for responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            table, th, td {
+                font-size: 14px;
+            }
+
+            input[type="number"] {
+                width: 50px;
+            }
+
+            #results, #total {
+                max-width: 100%;
+                padding: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            table, th, td {
+                font-size: 12px;
+            }
+
+            input[type="number"] {
+                width: 40px;
+            }
+
+            #results, #total {
+                max-width: 100%;
+                padding: 5px;
+            }
         }
     </style>
 </head>
