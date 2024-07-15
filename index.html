@@ -271,42 +271,48 @@
             });
 
             foods.forEach(food => {
+                const foodId = food.id;
+                let caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
+                let foodName;
+
+                // Handle ad hoc foods
+                if (foodId.startsWith('adhoc')) {
+                    const index = foodId.match(/\d+/)[0];
+                    caloriesPerOunce = parseFloat(document.getElementById(`adhoc-calories-${index}`).value);
+                    foodName = document.getElementById(`adhoc-food-${index}`).value;
+                } else {
+                    foodName = foodId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+
                 const ounces = parseFloat(food.value);
-                if (!isNaN(ounces)) {
-                    const caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce || food.previousElementSibling.value);
+                if (!isNaN(ounces) && !isNaN(caloriesPerOunce)) {
                     const subtotalCalories = ounces * caloriesPerOunce;
                     totalCalories += subtotalCalories;
 
-                    const foodId = food.id;
-                    const foodName = foodId.startsWith('adhoc') ? document.getElementById(foodId.replace('ounces', 'food')).value : foodId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const runningTotalCell = document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`);
+                    runningTotalCell.textContent = subtotalCalories;
+
                     const foodSubtotalRow = document.createElement('tr');
                     const foodNameCell = document.createElement('td');
                     const caloriesPerOunceCell = document.createElement('td');
                     const ouncesCell = document.createElement('td');
-                    const runningTotalCell = document.createElement('td');
+                    const runningTotalCellClone = runningTotalCell.cloneNode(true);
+
                     foodNameCell.textContent = foodName;
                     caloriesPerOunceCell.textContent = caloriesPerOunce;
                     ouncesCell.textContent = ounces;
-                    const previousRunningTotal = parseFloat(document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`).textContent); // Retrieve previous running total
-                    const newRunningTotal = previousRunningTotal + subtotalCalories; // Calculate new running total
-                    runningTotalCell.textContent = newRunningTotal;
-                    document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`).textContent = newRunningTotal; // Update running total in the table
+
                     foodSubtotalRow.appendChild(foodNameCell);
                     foodSubtotalRow.appendChild(caloriesPerOunceCell);
                     foodSubtotalRow.appendChild(ouncesCell);
-                    foodSubtotalRow.appendChild(runningTotalCell);
+                    foodSubtotalRow.appendChild(runningTotalCellClone);
                     resultsDiv.appendChild(foodSubtotalRow);
                 }
             });
 
             if (totalCalories > 0) {
                 const totalCaloriesCell = document.getElementById('total-calories');
-                const runningTotalCells = document.querySelectorAll('[id$="-running-total"]'); // Select all running total cells
-                let sum = 0;
-                runningTotalCells.forEach(cell => {
-                    sum += parseFloat(cell.textContent);
-                });
-                totalCaloriesCell.textContent = sum;
+                totalCaloriesCell.textContent = totalCalories;
 
                 totalDiv.style.display = 'block';
             }
