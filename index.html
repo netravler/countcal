@@ -277,7 +277,8 @@
                     const subtotalCalories = ounces * caloriesPerOunce;
                     totalCalories += subtotalCalories;
 
-                    const foodName = food.id.replace(/adhoc-food-/g, '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const foodId = food.id;
+                    const foodName = foodId.startsWith('adhoc') ? document.getElementById(foodId.replace('ounces', 'food')).value : foodId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     const foodSubtotalRow = document.createElement('tr');
                     const foodNameCell = document.createElement('td');
                     const caloriesPerOunceCell = document.createElement('td');
@@ -286,10 +287,10 @@
                     foodNameCell.textContent = foodName;
                     caloriesPerOunceCell.textContent = caloriesPerOunce;
                     ouncesCell.textContent = ounces;
-                    const previousRunningTotal = parseFloat(document.getElementById(`${food.id.replace('adhoc-', '')}-running-total`).textContent); // Retrieve previous running total
+                    const previousRunningTotal = parseFloat(document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`).textContent); // Retrieve previous running total
                     const newRunningTotal = previousRunningTotal + subtotalCalories; // Calculate new running total
                     runningTotalCell.textContent = newRunningTotal;
-                    document.getElementById(`${food.id.replace('adhoc-', '')}-running-total`).textContent = newRunningTotal; // Update running total in the table
+                    document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`).textContent = newRunningTotal; // Update running total in the table
                     foodSubtotalRow.appendChild(foodNameCell);
                     foodSubtotalRow.appendChild(caloriesPerOunceCell);
                     foodSubtotalRow.appendChild(ouncesCell);
