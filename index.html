@@ -252,69 +252,45 @@
 
     <script>
         function calculate() {
-            const foods = document.querySelectorAll('.food-inputs input[type="number"]');
+            const foods = document.querySelectorAll('input[type="number"]');
             let totalCalories = 0;
-
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-
-            const totalDiv = document.getElementById('total');
-            totalDiv.style.display = 'none';
-
-            // Zero out the total calories
-            document.getElementById('total-calories').textContent = 0;
-
-            // Zero out the running totals
-            const runningTotalCells = document.querySelectorAll('[id$="-running-total"]');
-            runningTotalCells.forEach(cell => {
-                cell.textContent = 0;
-            });
 
             foods.forEach(food => {
                 const foodId = food.id;
-                let caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
-                let foodName;
-
-                // Handle ad hoc foods
-                if (foodId.startsWith('adhoc')) {
-                    const index = foodId.match(/\d+/)[0];
+                let caloriesPerOunce;
+                let ounces;
+                let runningTotalCell;
+                
+                if (foodId.startsWith('adhoc-calories')) {
+                    const index = foodId.split('-')[2];
                     caloriesPerOunce = parseFloat(document.getElementById(`adhoc-calories-${index}`).value);
-                    foodName = document.getElementById(`adhoc-food-${index}`).value;
+                    ounces = parseFloat(document.getElementById(`adhoc-ounces-${index}`).value);
+                    runningTotalCell = document.getElementById(`adhoc-running-total-${index}`);
+                } else if (foodId.startsWith('adhoc-ounces')) {
+                    return;
                 } else {
-                    foodName = foodId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
+                    ounces = parseFloat(food.value);
+                    runningTotalCell = document.getElementById(`${foodId}-running-total`);
                 }
 
-                const ounces = parseFloat(food.value);
                 if (!isNaN(ounces) && !isNaN(caloriesPerOunce)) {
                     const subtotalCalories = ounces * caloriesPerOunce;
                     totalCalories += subtotalCalories;
-
-                    const runningTotalCell = document.getElementById(`${foodId.replace('adhoc-', '')}-running-total`);
-                    runningTotalCell.textContent = subtotalCalories;
-
-                    const foodSubtotalRow = document.createElement('tr');
-                    const foodNameCell = document.createElement('td');
-                    const caloriesPerOunceCell = document.createElement('td');
-                    const ouncesCell = document.createElement('td');
-                    const runningTotalCellClone = runningTotalCell.cloneNode(true);
-
-                    foodNameCell.textContent = foodName;
-                    caloriesPerOunceCell.textContent = caloriesPerOunce;
-                    ouncesCell.textContent = ounces;
-
-                    foodSubtotalRow.appendChild(foodNameCell);
-                    foodSubtotalRow.appendChild(caloriesPerOunceCell);
-                    foodSubtotalRow.appendChild(ouncesCell);
-                    foodSubtotalRow.appendChild(runningTotalCellClone);
-                    resultsDiv.appendChild(foodSubtotalRow);
+                    runningTotalCell.textContent = subtotalCalories.toFixed(2);
+                } else {
+                    runningTotalCell.textContent = '0';
                 }
             });
 
-            if (totalCalories > 0) {
-                const totalCaloriesCell = document.getElementById('total-calories');
-                totalCaloriesCell.textContent = totalCalories;
+            const totalCaloriesCell = document.getElementById('total-calories');
+            totalCaloriesCell.textContent = totalCalories.toFixed(2);
 
+            const totalDiv = document.getElementById('total');
+            if (totalCalories > 0) {
                 totalDiv.style.display = 'block';
+            } else {
+                totalDiv.style.display = 'none';
             }
         }
     </script>
