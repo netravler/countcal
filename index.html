@@ -210,6 +210,30 @@
                 <td><input type="number" id="blue-cheese" data-calories-per-ounce="100"></td>
                 <td id="blue-cheese-running-total">0</td>
             </tr>
+            <tr>
+                <td><input type="text" id="adhoc-food-1" placeholder="Food"></td>
+                <td><input type="number" id="adhoc-calories-1" placeholder="Calories/oz"></td>
+                <td><input type="number" id="adhoc-ounces-1"></td>
+                <td id="adhoc-running-total-1">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="adhoc-food-2" placeholder="Food"></td>
+                <td><input type="number" id="adhoc-calories-2" placeholder="Calories/oz"></td>
+                <td><input type="number" id="adhoc-ounces-2"></td>
+                <td id="adhoc-running-total-2">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="adhoc-food-3" placeholder="Food"></td>
+                <td><input type="number" id="adhoc-calories-3" placeholder="Calories/oz"></td>
+                <td><input type="number" id="adhoc-ounces-3"></td>
+                <td id="adhoc-running-total-3">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="adhoc-food-4" placeholder="Food"></td>
+                <td><input type="number" id="adhoc-calories-4" placeholder="Calories/oz"></td>
+                <td><input type="number" id="adhoc-ounces-4"></td>
+                <td id="adhoc-running-total-4">0</td>
+            </tr>
         </table>
     </div>
     <button onclick="calculate()">Calculate</button>
@@ -228,7 +252,7 @@
 
     <script>
         function calculate() {
-            const foods = document.querySelectorAll('.food-inputs input');
+            const foods = document.querySelectorAll('.food-inputs input[type="number"]');
             let totalCalories = 0;
 
             const resultsDiv = document.getElementById('results');
@@ -249,11 +273,11 @@
             foods.forEach(food => {
                 const ounces = parseFloat(food.value);
                 if (!isNaN(ounces)) {
-                    const caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
+                    const caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce || food.previousElementSibling.value);
                     const subtotalCalories = ounces * caloriesPerOunce;
                     totalCalories += subtotalCalories;
 
-                    const foodName = food.id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const foodName = food.id.replace(/adhoc-food-/g, '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     const foodSubtotalRow = document.createElement('tr');
                     const foodNameCell = document.createElement('td');
                     const caloriesPerOunceCell = document.createElement('td');
@@ -262,10 +286,10 @@
                     foodNameCell.textContent = foodName;
                     caloriesPerOunceCell.textContent = caloriesPerOunce;
                     ouncesCell.textContent = ounces;
-                    const previousRunningTotal = parseFloat(document.getElementById(`${food.id}-running-total`).textContent); // Retrieve previous running total
+                    const previousRunningTotal = parseFloat(document.getElementById(`${food.id.replace('adhoc-', '')}-running-total`).textContent); // Retrieve previous running total
                     const newRunningTotal = previousRunningTotal + subtotalCalories; // Calculate new running total
                     runningTotalCell.textContent = newRunningTotal;
-                    document.getElementById(`${food.id}-running-total`).textContent = newRunningTotal; // Update running total in the table
+                    document.getElementById(`${food.id.replace('adhoc-', '')}-running-total`).textContent = newRunningTotal; // Update running total in the table
                     foodSubtotalRow.appendChild(foodNameCell);
                     foodSubtotalRow.appendChild(caloriesPerOunceCell);
                     foodSubtotalRow.appendChild(ouncesCell);
