@@ -26,7 +26,6 @@
 
         .food-inputs {
             margin-bottom: 10px;
-            overflow-x: auto;
         }
 
         #results {
@@ -44,45 +43,6 @@
             margin-top: 20px;
             border: 1px solid #ccc;
             padding: 10px;
-        }
-
-        /* Media queries for responsive design */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            table, th, td {
-                font-size: 14px;
-            }
-
-            input[type="number"] {
-                width: 50px;
-            }
-
-            #results, #total {
-                max-width: 100%;
-                padding: 5px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 5px;
-            }
-
-            table, th, td {
-                font-size: 12px;
-            }
-
-            input[type="number"] {
-                width: 40px;
-            }
-
-            #results, #total {
-                max-width: 100%;
-                padding: 5px;
-            }
         }
     </style>
 </head>
@@ -181,6 +141,12 @@
                 <td id="green-beans-running-total">0</td>
             </tr>
             <tr>
+                <td>Bibb leaf lettuce</td>
+                <td>5</td>
+                <td><input type="number" id="bibb" data-calories-per-ounce="5"></td>
+                <td id="bibb-running-total">0</td>
+            </tr>
+            <tr>
                 <td>Mixed Cooked Vegetables</td>
                 <td>25</td>
                 <td><input type="number" id="mixed-cooked-vegetables" data-calories-per-ounce="25"></td>
@@ -210,30 +176,6 @@
                 <td><input type="number" id="blue-cheese" data-calories-per-ounce="100"></td>
                 <td id="blue-cheese-running-total">0</td>
             </tr>
-            <tr>
-                <td><input type="text" id="adhoc-food-1" placeholder="Food"></td>
-                <td><input type="number" id="adhoc-calories-1" placeholder="Calories/oz"></td>
-                <td><input type="number" id="adhoc-ounces-1"></td>
-                <td id="adhoc-running-total-1">0</td>
-            </tr>
-            <tr>
-                <td><input type="text" id="adhoc-food-2" placeholder="Food"></td>
-                <td><input type="number" id="adhoc-calories-2" placeholder="Calories/oz"></td>
-                <td><input type="number" id="adhoc-ounces-2"></td>
-                <td id="adhoc-running-total-2">0</td>
-            </tr>
-            <tr>
-                <td><input type="text" id="adhoc-food-3" placeholder="Food"></td>
-                <td><input type="number" id="adhoc-calories-3" placeholder="Calories/oz"></td>
-                <td><input type="number" id="adhoc-ounces-3"></td>
-                <td id="adhoc-running-total-3">0</td>
-            </tr>
-            <tr>
-                <td><input type="text" id="adhoc-food-4" placeholder="Food"></td>
-                <td><input type="number" id="adhoc-calories-4" placeholder="Calories/oz"></td>
-                <td><input type="number" id="adhoc-ounces-4"></td>
-                <td id="adhoc-running-total-4">0</td>
-            </tr>
         </table>
     </div>
     <button onclick="calculate()">Calculate</button>
@@ -252,45 +194,62 @@
 
     <script>
         function calculate() {
-            const foods = document.querySelectorAll('input[type="number"]');
+            const foods = document.querySelectorAll('.food-inputs input');
             let totalCalories = 0;
 
-            foods.forEach(food => {
-                const foodId = food.id;
-                let caloriesPerOunce;
-                let ounces;
-                let runningTotalCell;
-                
-                if (foodId.startsWith('adhoc-calories')) {
-                    const index = foodId.split('-')[2];
-                    caloriesPerOunce = parseFloat(document.getElementById(`adhoc-calories-${index}`).value);
-                    ounces = parseFloat(document.getElementById(`adhoc-ounces-${index}`).value);
-                    runningTotalCell = document.getElementById(`adhoc-running-total-${index}`);
-                } else if (foodId.startsWith('adhoc-ounces')) {
-                    return;
-                } else {
-                    caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
-                    ounces = parseFloat(food.value);
-                    runningTotalCell = document.getElementById(`${foodId}-running-total`);
-                }
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
 
-                if (!isNaN(ounces) && !isNaN(caloriesPerOunce)) {
+            const totalDiv = document.getElementById('total');
+            totalDiv.style.display = 'none';
+
+            // Zero out the total calories
+            document.getElementById('total-calories').textContent = 0;
+
+            // Zero out the running totals
+            const runningTotalCells = document.querySelectorAll('[id$="-running-total"]');
+            runningTotalCells.forEach(cell => {
+                cell.textContent = 0;
+            });
+
+            foods.forEach(food => {
+                const ounces = parseFloat(food.value);
+                if (!isNaN(ounces)) {
+                    const caloriesPerOunce = parseFloat(food.dataset.caloriesPerOunce);
                     const subtotalCalories = ounces * caloriesPerOunce;
                     totalCalories += subtotalCalories;
-                    runningTotalCell.textContent = subtotalCalories.toFixed(2);
-                } else {
-                    runningTotalCell.textContent = '0';
+
+                    const foodName = food.id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    const foodSubtotalRow = document.createElement('tr');
+                    const foodNameCell = document.createElement('td');
+                    const caloriesPerOunceCell = document.createElement('td');
+                    const ouncesCell = document.createElement('td');
+                    const runningTotalCell = document.createElement('td');
+                    foodNameCell.textContent = foodName;
+                    caloriesPerOunceCell.textContent = caloriesPerOunce;
+                    ouncesCell.textContent = ounces;
+                    const previousRunningTotal = parseFloat(document.getElementById(`${food.id}-running-total`).textContent); // Retrieve previous running total
+                    const newRunningTotal = previousRunningTotal + subtotalCalories; // Calculate new running total
+                    runningTotalCell.textContent = newRunningTotal;
+                    document.getElementById(`${food.id}-running-total`).textContent = newRunningTotal; // Update running total in the table
+                    foodSubtotalRow.appendChild(foodNameCell);
+                    foodSubtotalRow.appendChild(caloriesPerOunceCell);
+                    foodSubtotalRow.appendChild(ouncesCell);
+                    foodSubtotalRow.appendChild(runningTotalCell);
+                    resultsDiv.appendChild(foodSubtotalRow);
                 }
             });
 
-            const totalCaloriesCell = document.getElementById('total-calories');
-            totalCaloriesCell.textContent = totalCalories.toFixed(2);
-
-            const totalDiv = document.getElementById('total');
             if (totalCalories > 0) {
+                const totalCaloriesCell = document.getElementById('total-calories');
+                const runningTotalCells = document.querySelectorAll('[id$="-running-total"]'); // Select all running total cells
+                let sum = 0;
+                runningTotalCells.forEach(cell => {
+                    sum += parseFloat(cell.textContent);
+                });
+                totalCaloriesCell.textContent = sum;
+
                 totalDiv.style.display = 'block';
-            } else {
-                totalDiv.style.display = 'none';
             }
         }
     </script>
